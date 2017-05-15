@@ -9,6 +9,7 @@ import com.qubit.topnet.utils.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -212,8 +213,13 @@ public class FilesDownloadHandler extends Handler {
           boolean isDir = item.isDirectory();
           
           buf.append("<a href=\"./");
-          //href address
-          buf.append(item.getName());
+          try {
+            //href address
+            buf.append(URLEncoder.encode(item.getName(), "UTF-8"));
+          } catch (UnsupportedEncodingException ex) {
+            log.log(Level.SEVERE, null, ex);
+            buf.append(item.getName());
+          }
           if (isDir) {
             buf.append("/");
           }
