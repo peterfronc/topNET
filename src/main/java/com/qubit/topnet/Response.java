@@ -28,7 +28,6 @@ import com.qubit.topnet.exceptions.ResponseBuildingStartedException;
 import com.qubit.topnet.exceptions.TooLateToChangeHeadersException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.channels.ByteChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -260,6 +259,15 @@ public class Response {
       }
     }
     return ret;
+  }
+  
+  public String getLowerCaseHeader(String name) {
+    for (String[] header : this.headers) {
+      if (header[0].toLowerCase().equals(name)) {
+        return header[1];
+      }
+    }
+    return null;
   }
   
   public String getHeader(String name) {
@@ -629,7 +637,7 @@ public class Response {
   }
 
   public boolean buildContentTypeWithCharset() {
-    if (this.getHeader("Content-Type") == null) {
+    if (this.getLowerCaseHeader("content-type") == null) {
       StringBuilder sb = new StringBuilder(this.getContentType());
       if (this.getCharset() != null) {
         sb.append("; charset=");

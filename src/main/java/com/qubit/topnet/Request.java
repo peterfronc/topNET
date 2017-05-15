@@ -180,7 +180,7 @@ public class Request {
       }
       
       Charset charset;
-      String contentType = this.getHeader("Content-Type");
+      String contentType = this.getLowerCaseHeader("content-type");
       
       if (contentType != null) {
         int idx = contentType.indexOf("charset=");
