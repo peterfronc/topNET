@@ -23,6 +23,7 @@ package com.qubit.topnet;
 import static com.qubit.topnet.ServerBase.HTTP_0_9;
 import static com.qubit.topnet.ServerBase.HTTP_1_0;
 import static com.qubit.topnet.ServerBase.HTTP_1_1;
+import static com.qubit.topnet.ServerBase.getCharsetForName;
 import com.qubit.topnet.events.BeforeOutputStreamSetEvent;
 import com.qubit.topnet.events.BytesReadEvent;
 import com.qubit.topnet.events.ConnectionClosedEvent;
@@ -174,21 +175,34 @@ public class Request {
   }
   
   public String getBodyString() throws OutputStreamAlreadySetException {
+    return getBodyString(null);
+  }
+  
+  public String getBodyString(Charset charset) throws OutputStreamAlreadySetException {
     if (this.bodyStringCache == null) {
         
       if (!(this.bytesStream instanceof BytesStream)) {
         throw new OutputStreamAlreadySetException();
       }
       
-      Charset charset;
-      String contentType = this.getHeader("Content-Type");
-      
-      if (contentType != null) {
-        int idx = contentType.indexOf("charset=");
-        String charsetString = contentType.substring(idx + 8).trim();
-        charset = Charset.forName(charsetString);
-      } else {
-        charset = Charset.defaultCharset();
+      if (charset == null) {
+        String contentType = this.getHeader("Content-Type");
+
+        if (contentType != null) {
+          int idx = contentType.indexOf("charset=");
+          if (idx != -1) {
+            String charsetString = contentType.substring(idx + 8);
+            int colonIdx = charsetString.indexOf(';');
+            if (colonIdx != -1) {
+              charsetString = charsetString.substring(0, colonIdx).trim();
+            }
+            charset = getCharsetForName(charsetString);
+          } else {
+            charset = Charset.defaultCharset();
+          }
+        } else {
+          charset = Charset.defaultCharset();
+        }
       }
       
       this.bodyStringCache = bytesStream
