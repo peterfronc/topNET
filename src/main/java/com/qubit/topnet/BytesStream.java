@@ -43,7 +43,7 @@ public class BytesStream {
     this.maxBufferSize = maxBufferSize;
   }
 
-  private static int defaultBufferChunkSize = 2 *32 * 1024; // def cluster size
+  private static int defaultBufferChunkSize = 2 * 32 * 1024; // def cluster size
   private static int minimumBytesToKeepAfterJobShrink = 4 * 32 * 1024;
   private static long moveReadTailThreshold = 2 * defaultBufferChunkSize;
   private long maxBufferSize = DEFAULT_MAX_MESSAGE_SIZE - 1;

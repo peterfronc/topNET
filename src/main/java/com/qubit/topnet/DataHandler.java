@@ -1172,7 +1172,8 @@ public final class DataHandler {
   }
 
   private int calculateBufferSizeByContentSize(long cl) {
-    return Math.min(this.maxFromContentSizeBufferChunkSize, (int) (cl / 2));
+    return (this.maxFromContentSizeBufferChunkSize > (cl / 2)) ?
+        ((int)(cl / 2)) : this.maxFromContentSizeBufferChunkSize;
   }
 
   private String getHeader(String name) {
