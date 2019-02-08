@@ -111,7 +111,7 @@ public abstract class ServerBase {
   
   private int jobsPerThread = THREAD_JOBS_SIZE;
   private int minimumThreadsAmount = THREADS_POOL_SIZE;
-  private int maxFromContentSizeBufferChunkSize = 256 * 1024;
+  private int maxFromContentSizeBufferChunkSize = 64 * 1024;
   
   private long maxMessageSize = DEFAULT_MAX_MESSAGE_SIZE;
   private long defaultIdleTime = MAX_IDLE_TOUT;
