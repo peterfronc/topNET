@@ -142,6 +142,11 @@ public class Response {
     return headers;
   }
   
+  public void setRedirect(String url) {
+    this.setHttpCode(302);
+    this.addHeader("Location", url);
+  }
+  
   /**
    * Called just before starting reading to output.
    *
