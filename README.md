@@ -2,11 +2,10 @@
 
 ## Introduction
 
-`topNET` is a very lightweight and fast asynchronous HTTP server. It's highly 
+`topNET` is a fast and lightweight asynchronous HTTP server. It is highly 
 customizable and has been designed with ease of usability in mind.
-Performance is on pair with servers like NGINX, Fasthttp or Netty and even 
-higher - depending on configuration.
-`topNET` is as large as few tens of kilobytes.
+Performance is on pair with servers like NGINX, Fasthttp or Netty.
+`topNET` is as little as few tens of kilobytes.
 
 ## Design Key Points
 * Performance
@@ -16,13 +15,12 @@ higher - depending on configuration.
 
 ### Performance
 
-`topNET` is designed to behave and look similar to typical J2EE specification but 
-only on a basic level. Structurally one may see some similarities with 
-technologies like Servlet.
+`topNET` API is designed to be similar to typical J2EE specification.
+API has some similarities to technologies like Servlet.
 
-There has been implemented two server types, one is based on a typical event 
-only based R/W operations wakups and a second version where all R/W operations 
-are handled in full isolation by handling workers, the main difference between 
+There has been implemented two request traffic handling types, one is based on a typical event 
+only driven R/W operations and second is where all R/W operations 
+are handled in full isolation by handling workers. The main difference between 
 two is that main accept loop in event based version case wakes threads to process
  incoming R/W operations where second version does only accepting connections 
 and let threads to decide on their own how to handle R/W operations (typically they
@@ -31,32 +29,31 @@ Both versions have similar performance in average use case, however under heavy
 load - AcceptOnlyEventsTypeServer server may be slightly faster and have better 
 micro-latency.
 
-Both versions however have same functionality with exception of on or two extra 
+Both request handling types have same functionality with exception of extra 
 options for AcceptOnlyEventsTypeServer.
-Both server types also share same handling API for requests and response.
+Both also share same handling API for requests and response.
 
-To use event only based server simply use:
+To use event only type server use:
 ```
 com.qubit.topnet.PureEventsTypeServer
 ```
-to use "wait" based server just choose:
+to use "wait" type server choose:
 ```
 com.qubit.topnet.AcceptOnlyEventsTypeServer
 ```
 
-Because both servers share same functionality, they wont be referred seperately 
-anymore unless its required in this documentation and as a single logical entity
- we will use a "server" word in following content.
+Because both types share same work under common API, they wont be referred seperately 
+anymore unless its required.
 
-Server uses 3 types of handling threads where POOL type is default:
+Server instance uses 3 types of handling threads where POOL type is the default option:
 * POOL - this type uses atomic reference array with constant 
     size created upon server start. It is safest and lightest way that stores 
     thread jobs. 
 * QUEUE - this type is similar to "pool" but uses concurrent list instead of 
-    statically sized array like in "pool" case. While "pool" type thread scans the 
-    array to find jobs to do, this thread peeks jobs from head and add to tail in 
-    typical FILO manner. Each thread of "queue" type maintain its own local queue 
-    instance. QUEUE type has an option of unlimited queue size and such option 
+    statically sized array like in "pool" case. While "pool" type worker scans the 
+    array to find jobs, "queue" type picks jobs in typical FILO manner. 
+    Each thread acessing the queue maintain its own local instance. 
+    QUEUE type has an option of unlimited queue size and such option 
     may be useful in some advanced cases.
 * QUEUE_SHARED - this is same as QUEUE type with the difference that all threads 
     share same concurrent queue. This type of jobs may work better for servers that 
